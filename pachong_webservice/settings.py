@@ -76,17 +76,7 @@ WSGI_APPLICATION = 'pachong_webservice.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-#'default': {
-#    'ENGINE': 'django.db.backends.mysql',
-#    'NAME': 'scb_crawler_system',
-#    'USER': 'root',
-#    'PASSWORD': 'bgpc1qaz',
-#    'HOST': '47.91.140.136',
-#    'PORT': '3306',
-##        'OPTIONS': {
-##            'read_default_file': os.path.join(BASE_DIR, 'mysql.cnf'),
-##        },
-#}
+
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test',
@@ -94,9 +84,6 @@ DATABASES = {
         'PASSWORD': 'xhm900119',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-#        'OPTIONS': {
-#            'read_default_file': os.path.join(BASE_DIR, 'mysql.cnf'),
-#        },
     }
 }
 
