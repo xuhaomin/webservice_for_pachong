@@ -1,8 +1,30 @@
 from django.http import HttpResponse
 import json
 import time
+import redis
+from django.shortcuts import render
 
 from crawler.models import Machine, Spider, Task
+
+
+redis_url = 'redis://root@47.91.140.136:6361'
+redis_params = {
+    'db': 18,
+    'socket_timeout': 30,
+    'socket_connect_timeout': 30,
+    'retry_on_timeout': True,
+}
+server = redis.StrictRedis.from_url(
+    redis_url, **redis_params)
+
+machines = ['pachong_2', 'pachong_1']
+
+
+def fontpage(request):
+    url = "http://127.0.0.1:8000/data"
+    return render(
+        request, 'pachong_webservice/monitor.html', {'baseurl': url}
+    )
 
 
 def add_machine(request):
@@ -144,3 +166,51 @@ def format_dict(data):
         else:
             rest = ''
         return {'name': time, 'value': [max_value, max_key, rest]}
+
+
+def responsestats(request):
+    if request.method == "POST":
+        type = request.POST.get('type', '')
+        t = request.POST.get('t', '')
+        spider_name = request.POST.get('spider', '')
+    elif request.method == "GET":
+        type = request.GET.get('type', '')
+        t = request.GET.get('t', '')
+        spider_name = request.GET.get('spider', '')
+
+    data = {}
+    int_t = int(t)
+    half_t = int(t)//2
+
+    for machine_name in machines:
+        key = '{}:{}:{}:{}'.format(
+            spider_name, machine_name, t, type)
+        counter = 0
+        i = 0
+        l = min(24, server.llen(key))
+        temp_time = 0
+        format_data = []
+        while counter < l:
+            ll = server.lrange(key, 0, l)
+            eles = list(map(json.loads, ll))
+            if not temp_time:
+                temp_time = eles[i]['time']
+                format_data.append(format_dict(eles[i]))
+                counter += 1
+                i += 1
+            else:
+                while temp_time - eles[i]['time'] - half_t > int_t:
+                    temp_time -= int_t
+                    format_data.append(
+                        {'name': temp_time, 'value': [0, '', '']})
+                    counter += 1
+                else:
+                    format_data.append(format_dict(eles[i]))
+                    temp_time = 0
+                    i += 1
+                    counter += 1
+
+        data[machine_name] = format_data[0:l]
+    content = json.dumps(data)
+    status = 200
+    return HttpResponse(content=content, status=status, content_type="application/json")

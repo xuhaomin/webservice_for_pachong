@@ -56,7 +56,7 @@ ROOT_URLCONF = 'pachong_webservice.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR+"/templates", ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': 'xhm900119',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }

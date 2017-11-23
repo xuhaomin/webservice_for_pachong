@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^task/begin', views.task_begin, name='task_begin'),
     url(r'^task/done', views.task_done, name='task_done'),
     url(r'^machine/get', views.get_machine, name='get_machine'),
+    url(r'^data', views.responsestats, name='responsestats'),
 ]
